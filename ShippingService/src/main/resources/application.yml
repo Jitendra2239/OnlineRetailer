@@ -1,0 +1,51 @@
+spring:
+   #datasource:
+      #url: jdbc:h2:mem:testapp
+      #driverClassName: org.h2.Driver
+      #username: sa
+      #password:
+   #jpa:
+      #database-platform: org.hibernate.dialect.H2Dialect
+   application:
+        name: ShippingService
+   config:
+     import: optional:configserver:http://localhost:8760
+springdoc :
+   swagger-ui:
+     
+      path : /
+          
+   
+server:
+  port: 8088
+ 
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      shippingService:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+
+
+ 
+   
